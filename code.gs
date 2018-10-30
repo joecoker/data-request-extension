@@ -1,13 +1,10 @@
 function hasUserSavedDetails(event) {
-  if (event["formInput"] == undefined) {
-    buildUserDetailsPage();
-  }
-  else {
+
     buildOrganisationList();
-  }
+
 };
 
-function buildUserDetailsPage() {
+function buildUserDetailsPage() { // Not building
   var card = CardService.newCardBuilder().setHeader(CardService.newCardHeader().setTitle('Enter your details'));
 
   var saveAndReturn = CardService.newAction().setFunctionName('saveAndReturn');
@@ -38,20 +35,23 @@ function buildUserDetailsPage() {
 };
 
 function buildOrganisationList() {
+
     var threads = GmailApp.getInboxThreads();
     var messages = GmailApp.getMessagesForThreads(threads);
     var from = [];
 
     for(var i = 0; i < threads.length; i++)
     {
-      from.push([messages[i][0].getFrom(),i]);
+      from.push(messages[i][0].getFrom());
     }
 
-    from = from.filter(function(item, pos) { // Not working to remove duplicates, need to also remove numbers
-      return from.indexOf(item) == pos;
-    })
-    throw (from)
+    var filtered = from.filter(function(element, index, self) {
+    return index == self.indexOf(element);
+    });
+
+    return filtered;
   };
+
 
 function saveDetails(formObject) {
   var userPersonalDetails = PropertiesService.getUserProperties();
@@ -64,6 +64,5 @@ function saveDetails(formObject) {
 };
 
 function saveAndReturn() {
-  saveDetails();
-  buildOrganisationList();
+  throw "Hello"
 };
